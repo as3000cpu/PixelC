@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <title>Pixelator — Offline Image &amp; Video Censor Editor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-name">Pixelator</span>
+    </div>
+    <label class="upload-btn">
+      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,video/mp4,video/webm,video/quicktime" hidden />
+      Open file
+    </label>
+  </header>
+
+  <main class="app-main">
+
+    <aside class="toolbar">
+
+      <section class="tool-group">
+        <h2 class="tool-group-title">Mode</h2>
+        <div class="segmented">
+          <button id="modeEntire" class="segmented-btn">Entire file</button>
+          <button id="modeRegion" class="segmented-btn">Selected regions</button>
+        </div>
+        <p id="regionHint" class="hint">Tap the canvas to drop a shape, drag to move or resize it.</p>
+      </section>
+
+      <section class="tool-group" id="selectionTools">
+        <h2 class="tool-group-title">Selection tool</h2>
+        <div class="tool-grid">
+          <button class="tool-btn" data-tool="rectangle">
+            <span class="tool-icon icon-rect"></span> Rectangle
+          </button>
+          <button class="tool-btn" data-tool="roundedRect">
+            <span class="tool-icon icon-round"></span> Rounded
+          </button>
+          <button class="tool-btn" data-tool="circle">
+            <span class="tool-icon icon-circle"></span> Circle
+          </button>
+          <button class="tool-btn" data-tool="polygon">
+            <span class="tool-icon icon-poly"></span> Custom
+          </button>
+        </div>
+
+        <div class="row" id="cornerRadiusRow" style="display:none;">
+          <label for="cornerRadius">Corner radius</label>
+          <input type="range" id="cornerRadius" min="0" max="120" value="24" />
+        </div>
+
+        <button id="finishPolygon" class="ghost-btn" style="display:none;">Finish shape</button>
+        <button id="deleteSelection" class="ghost-btn danger">Delete selection</button>
+      </section>
+
+      <section class="tool-group">
+        <h2 class="tool-group-title">Pixelation</h2>
+        <div class="row">
+          <label for="pixelSize">Block size</label>
+          <input type="range" id="pixelSize" min="2" max="80" value="12" />
+          <span id="pixelSizeLabel" class="value-badge">12</span>
+        </div>
+      </section>
+
+      <section class="tool-group" id="videoControls" style="display:none;">
+        <h2 class="tool-group-title">Video</h2>
+        <button id="playPause" class="ghost-btn">▶ Play</button>
+        <label class="checkbox-row">
+          <input type="checkbox" id="preserveAudio" checked />
+          Preserve original audio
+        </label>
+      </section>
+
+      <section class="tool-group export-group">
+        <h2 class="tool-group-title">Export</h2>
+        <div class="export-buttons">
+          <button id="exportPng" class="primary-btn">Export PNG</button>
+          <button id="exportJpg" class="primary-btn">Export JPG</button>
+          <button id="exportWebm" class="primary-btn" style="display:none;">Export WebM</button>
+        </div>
+      </section>
+
+    </aside>
+
+    <section class="workspace-area">
+      <div id="emptyState" class="empty-state">
+        <span class="brand-mark large" aria-hidden="true"></span>
+        <p>Open an image or video to start censoring.</p>
+        <p class="empty-sub">Everything runs on-device. Nothing leaves this browser.</p>
+      </div>
+
+      <div id="canvasWrap" class="canvas-wrap" style="display:none;">
+        <canvas id="workspace"></canvas>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/utils.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/pixelator.js"></script>
+  <script src="js/selection.js"></script>
+  <script src="js/fileLoader.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/exporter.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

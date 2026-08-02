@@ -1,0 +1,333 @@
+/* Pixelator — dark, modern, mosaic-inspired interface.
+   Signature: the checkerboard/mosaic block motif used on the brand mark,
+   empty state, and canvas backdrop — it's a literal nod to what pixelation
+   does to an image, made into the visual identity. */
+
+:root {
+  --bg: #0b0d10;
+  --panel: #14171b;
+  --panel-raised: #1b1f24;
+  --border: #262b31;
+  --text: #e8ebee;
+  --text-dim: #8a929c;
+  --accent: #42e8d5;
+  --accent-dim: rgba(66, 232, 213, 0.16);
+  --danger: #ff6b6b;
+  --radius: 10px;
+  font-size: 16px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ---------- Header ---------- */
+
+.app-header {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.brand-mark {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  border-radius: 4px;
+  background:
+    linear-gradient(45deg, transparent 48%, var(--accent) 48%, var(--accent) 52%, transparent 52%),
+    conic-gradient(var(--accent) 0 25%, #2fbfb0 0 50%, var(--accent) 0 75%, #2fbfb0 0 100%);
+  background-size: 100% 100%, 100% 100%;
+  opacity: 0.95;
+  image-rendering: pixelated;
+}
+
+.brand-mark.large {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+}
+
+.brand-name { font-size: 1.05rem; }
+
+.upload-btn {
+  background: var(--accent);
+  color: #04211d;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+.upload-btn:hover { filter: brightness(1.08); }
+
+/* ---------- Layout ---------- */
+
+.app-main {
+  height: calc(100% - 56px);
+  display: flex;
+}
+
+.toolbar {
+  width: 280px;
+  min-width: 280px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tool-group-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin: 0 0 10px;
+}
+
+.hint {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin: 8px 0 0;
+  line-height: 1.4;
+}
+
+/* Segmented control (Entire / Region) */
+
+.segmented {
+  display: flex;
+  background: var(--panel-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.segmented-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  padding: 8px 6px;
+  font-size: 0.82rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.segmented-btn.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* Selection tool grid */
+
+.tool-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tool-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel-raised);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+}
+
+.tool-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.tool-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border: 2px solid currentColor;
+  flex-shrink: 0;
+}
+.icon-rect { border-radius: 2px; }
+.icon-round { border-radius: 5px; }
+.icon-circle { border-radius: 50%; }
+.icon-poly {
+  border: none;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  background: currentColor;
+}
+
+/* Rows / sliders */
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.row label {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+input[type="range"] {
+  flex: 1;
+  accent-color: var(--accent);
+}
+
+.value-badge {
+  font-size: 0.78rem;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 2px 8px;
+  border-radius: 6px;
+  min-width: 28px;
+  text-align: center;
+}
+
+/* Generic buttons */
+
+.ghost-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px;
+  border-radius: 8px;
+  font-size: 0.84rem;
+  margin-bottom: 8px;
+}
+.ghost-btn:hover { border-color: var(--accent); color: var(--accent); }
+.ghost-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  margin-top: 10px;
+}
+
+.export-group { margin-top: auto; }
+
+.export-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.primary-btn {
+  background: var(--accent);
+  color: #04211d;
+  border: none;
+  padding: 11px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+.primary-btn:hover { filter: brightness(1.08); }
+.primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* ---------- Workspace ---------- */
+
+.workspace-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background:
+    linear-gradient(45deg, #0f1215 25%, transparent 25%, transparent 75%, #0f1215 75%),
+    linear-gradient(45deg, #0f1215 25%, transparent 25%, transparent 75%, #0f1215 75%);
+  background-size: 24px 24px;
+  background-position: 0 0, 12px 12px;
+  background-color: var(--bg);
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+}
+
+.empty-state p { margin: 4px 0; font-size: 0.95rem; }
+.empty-sub { font-size: 0.8rem !important; opacity: 0.7; }
+
+.canvas-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+#workspace {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 4px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  touch-action: none; /* so pointer drags aren't hijacked for scrolling on mobile */
+}
+
+/* ---------- Responsive: stack toolbar under canvas on narrow / mobile screens ---------- */
+
+@media (max-width: 720px) {
+  html, body { overflow-y: auto; }
+
+  .app-main {
+    flex-direction: column;
+    height: auto;
+    overflow-y: auto;
+  }
+
+  .toolbar {
+    width: 100%;
+    min-width: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 46vh;
+  }
+
+  .workspace-area {
+    min-height: 40vh;
+    flex: none;
+  }
+}
