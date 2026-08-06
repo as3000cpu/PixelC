@@ -31,11 +31,30 @@ PX.exporter = (function () {
     return clean;
   }
 
-  function exportImage(format) {
+  function exportImage(format, onDone) {
     const mime = format === 'jpg' ? 'image/jpeg' : 'image/png';
     const ext = format === 'jpg' ? 'jpg' : 'png';
     const clean = renderStillToCanvas();
-    clean.toBlob((blob) => downloadBlob(blob, `pixelated.${ext}`), mime, 0.92);
+    clean.toBlob((blob) => {
+      downloadBlob(blob, `pixelated.${ext}`);
+      if (onDone) onDone();
+    }, mime, 0.92);
+  }
+
+  function pickMimeType() {
+    const candidates = [
+      'video/webm;codecs=vp9,opus',
+      'video/webm;codecs=vp8,opus',
+      'video/webm;codecs=vp9',
+      'video/webm;codecs=vp8',
+      'video/webm'
+    ];
+    for (const type of candidates) {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(type)) {
+        return type;
+      }
+    }
+    return ''; // let the browser pick a default
   }
 
   function exportVideo(options, callbacks) {
@@ -43,6 +62,9 @@ PX.exporter = (function () {
     const { onStart, onProgress, onDone, onError } = callbacks || {};
     const video = state.source;
     const canvas = PX.renderer.getCanvas();
+    const wasLooping = video.loop;
+
+    function restoreLoop() { video.loop = wasLooping; }
 
     try {
       const stream = canvas.captureStream(fps);
@@ -56,15 +78,22 @@ PX.exporter = (function () {
         }
       }
 
-      const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9,opus' });
+      const mimeType = pickMimeType();
+      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
       const chunks = [];
       recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
       recorder.onstop = () => {
+        restoreLoop();
         const blob = new Blob(chunks, { type: 'video/webm' });
         downloadBlob(blob, 'pixelated.webm');
         if (onDone) onDone();
       };
 
+      // The video element loops during normal editing (see fileLoader.js),
+      // but if it keeps looping during export the 'ended' event below never
+      // fires, the recorder never stops, and nothing gets downloaded. Turn
+      // looping off just for the duration of the recording.
+      video.loop = false;
       video.currentTime = 0;
       video.muted = !preserveAudio;
       if (onStart) onStart();
@@ -89,6 +118,7 @@ PX.exporter = (function () {
         requestAnimationFrame(tick);
       }
     } catch (err) {
+      restoreLoop();
       console.error(err);
       if (onError) onError(err);
     }
